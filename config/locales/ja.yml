@@ -229,7 +229,7 @@ ja:
       create_article: '記事を作成する'
       comment_list: 'コメント一覧'
       post_comment: 'コメント投稿'
-      initial_assign: 'あなたのアドレスが、DIVEINTOPOSTのチームにアサインされました！'
+      initial_assign: '削除'
       initial_password: '初期パスワード:'
       author: '投稿者'
       delete_comment: 'コメントを削除する'
