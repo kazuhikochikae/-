@@ -15,8 +15,25 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
+  def leave_team
+    @team = Team.find_by(name: params[:id])
+    user_to_leave = User.find(params[:user_id])
 
-  def edit; end
+    if user_to_leave == @team.owner || user_to_leave == current_user
+      # オーナーまたはログインユーザーの場合のみ、Teamから削除（離脱）する
+      @team.users.delete(user_to_leave)
+      redirect_to @team, notice: "User successfully left the team."
+    else
+      redirect_to @team, alert: "Unable to leave the team."
+    end
+  end
+
+  def edit
+    @team = Team.find_by(name: params[:id])
+    unless current_user == @team.owner
+      redirect_to @team, alert: "You are not authorized to edit this team."
+    end
+  end
 
   def create
     @team = Team.new(team_params)
@@ -69,6 +86,8 @@ class TeamsController < ApplicationController
       redirect_to @team, alert: "Unable to change team leader." # 失敗時のリダイレクト先やアラートメッセージは適宜変更してください
     end
   end
+
+  
 
 
   
