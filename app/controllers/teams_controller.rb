@@ -15,6 +15,7 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
+
   def edit; end
 
   def create
@@ -46,6 +47,31 @@ class TeamsController < ApplicationController
   def dashboard
     @team = current_user.keep_team_id ? Team.find(current_user.keep_team_id) : current_user.teams.first
   end
+
+  
+  def change_leader
+    @team = Team.find_by(name: params[:id])
+    new_leader = User.find(params[:user_id]) # リクエストから新しいリーダーのユーザーIDを取得する（ここではuser_idとしていますが、実際のパラメーター名に合わせてください）
+
+    if current_user == @team.owner && new_leader != @team.owner
+
+      previous_owner = @team.owner # 前のオーナーを保持する
+
+    @team.update(owner: new_leader)
+    
+    # 新しいオーナーに通知メールを送信する
+    AssignMailer.assign_mail(new_leader.email, 'You have been assigned as the new team leader.').deliver_now
+
+
+      @team.update(owner: new_leader)
+      redirect_to @team, notice: "Team leader changed successfully." # 成功時のリダイレクト先や通知メッセージは適宜変更してください
+    else
+      redirect_to @team, alert: "Unable to change team leader." # 失敗時のリダイレクト先やアラートメッセージは適宜変更してください
+    end
+  end
+
+
+  
 
   private
 
