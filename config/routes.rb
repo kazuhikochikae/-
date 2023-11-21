@@ -18,5 +18,9 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :teams do
+    patch 'change_leader', on: :member
+  end
+
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 end
